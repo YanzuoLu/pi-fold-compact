@@ -1,0 +1,45 @@
+{
+	"name": "pi-fold-compact",
+	"version": "0.1.0",
+	"description": "Pi compaction backend that folds compacted history into pi-fold's deterministic, recoverable briefs instead of writing a model summary",
+	"type": "module",
+	"license": "MIT",
+	"keywords": [
+		"pi-package",
+		"pi-extension",
+		"compaction",
+		"pi-fold"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/YanzuoLu/pi-fold-compact.git"
+	},
+	"homepage": "https://github.com/YanzuoLu/pi-fold-compact#readme",
+	"pi": {
+		"extensions": [
+			"./src/index.ts"
+		]
+	},
+	"files": [
+		"src",
+		"README.md",
+		"LICENSE"
+	],
+	"scripts": {
+		"typecheck": "tsc --noEmit",
+		"test": "vitest --run",
+		"check": "npm run typecheck && npm run test"
+	},
+	"peerDependencies": {
+		"@earendil-works/pi-coding-agent": "*"
+	},
+	"devDependencies": {
+		"@earendil-works/pi-coding-agent": "^0.87.1",
+		"@types/node": "^22.10.2",
+		"typescript": "^5.7.2",
+		"vitest": "^2.1.8"
+	},
+	"engines": {
+		"node": ">=20"
+	}
+}
