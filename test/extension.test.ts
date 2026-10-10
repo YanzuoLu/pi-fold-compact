@@ -108,6 +108,8 @@ describe("pi-fold-compact", () => {
 		work(h.sm, 3, "b");
 		await h.compact();
 		expect(h.tool.description).toMatch(/^Use only the configured active-context actions: status, peek, expand, refold\./);
+		expect(h.tool.description).not.toMatch(/brief[s]? (have|is written)|Supplied fold briefs/);
+		expect(h.tool.parameters.properties).not.toHaveProperty("brief");
 
 		const status = await h.call({ action: "status" });
 		expect(status.roots.length).toBeGreaterThan(0);

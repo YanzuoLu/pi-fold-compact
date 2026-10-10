@@ -188,7 +188,7 @@ export default function piFoldCompact(pi: ExtensionAPI): void {
 		});
 	}
 
-	pi.registerTool(
+	pi.registerTool(withoutBriefs(
 		buildActiveContextTool({
 			name: TOOL_NAME,
 			label: DEFAULT_ACTIVE_CONTEXT_TOOL_LABEL,
@@ -199,6 +199,14 @@ export default function piFoldCompact(pi: ExtensionAPI): void {
 			minPeekSliceBytes: PEEK_MIN_SLICE_BYTES,
 			defaultPeekBytes: PEEK_DEFAULT_MAX_BYTES,
 			handler: (_toolCallId, params, _signal, _onUpdate, ctx) => execute(params, ctx),
-		}) as unknown as Parameters<ExtensionAPI["registerTool"]>[0],
-	);
+		}),
+	) as unknown as Parameters<ExtensionAPI["registerTool"]>[0]);
+}
+
+/** pi-fold's surface always offers agent-written briefs; folds here are written whole at compaction, so nothing is pending to brief. */
+function withoutBriefs<T extends { description: string; parameters: { properties: Record<string, unknown> } }>(tool: T): T {
+	const { brief: _brief, ...properties } = tool.parameters.properties;
+	const description = tool.description.replace(/ Supplied fold briefs have a hard \d+-character maximum\.$/, "");
+	if (description === tool.description) throw new Error("pi-fold's tool description changed; update withoutBriefs");
+	return { ...tool, description, parameters: { ...tool.parameters, properties } };
 }
