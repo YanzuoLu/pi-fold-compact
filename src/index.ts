@@ -188,7 +188,7 @@ export default function piFoldCompact(pi: ExtensionAPI): void {
 		});
 	}
 
-	pi.registerTool(withoutBriefs(
+	pi.registerTool(withoutCuration(
 		buildActiveContextTool({
 			name: TOOL_NAME,
 			label: DEFAULT_ACTIVE_CONTEXT_TOOL_LABEL,
@@ -203,10 +203,14 @@ export default function piFoldCompact(pi: ExtensionAPI): void {
 	) as unknown as Parameters<ExtensionAPI["registerTool"]>[0]);
 }
 
-/** pi-fold's surface always offers agent-written briefs; folds here are written whole at compaction, so nothing is pending to brief. */
-function withoutBriefs<T extends { description: string; parameters: { properties: Record<string, unknown> } }>(tool: T): T {
-	const { brief: _brief, ...properties } = tool.parameters.properties;
+/**
+ * pi-fold's surface always carries the parameters of its curation actions: `brief` for agent-written
+ * briefs on pending folds and `ids` for pins and re-cuts. Folds here are written whole at compaction
+ * and only read back, so those parameters would only invite calls that cannot succeed.
+ */
+function withoutCuration<T extends { description: string; parameters: { properties: Record<string, unknown> } }>(tool: T): T {
+	const { brief: _brief, ids: _ids, ...properties } = tool.parameters.properties;
 	const description = tool.description.replace(/ Supplied fold briefs have a hard \d+-character maximum\.$/, "");
-	if (description === tool.description) throw new Error("pi-fold's tool description changed; update withoutBriefs");
+	if (description === tool.description) throw new Error("pi-fold's tool description changed; update withoutCuration");
 	return { ...tool, description, parameters: { ...tool.parameters, properties } };
 }
